@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+</head>
+
+<body>
+    {{ myVar }}
+
+    <div id="todo"></div>
+    <form id='myForm'>
+        <input type="text" name="title"><br>
+        <input type="text" name="desc"><br>
+        <input type="number" name="priority"><br>
+        <input type="checkbox" name="completed"><br>
+        <input type="submit" value="submit new todo"><br>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+
+        const url = "/api/todo/"
+        // cokie validation
+        function getCookie(name) {
+            if (!document.cookie) {
+                return null;
+            }
+            const token = document.cookie.split(';')
+                .map(c => c.trim())
+                .filter(c => c.startsWith(name + '='));
+
+            if (token.length === 0) {
+                return null;
+            }
+            return decodeURIComponent(token[0].split('=')[1]);
+        }
+        const csrftoken = getCookie('csrftoken')
+
+
+        // GET request, list all todos
+        function createToDoList() {
+            fetch(url).then(res => res.json()).then(function (data) {
+                var txt = ''
+                for (let item of data) {
+                    txt += `<div  onclick="check1(event)">
+                        <input type='checkbox' checked =${item.completed} onclick="check(${item.id})"">
+                        <strong> ${item.title}</strong> <span>${item.desc}</span>
+                        <input type='button' value="X" onclick="deleteThisTodo(${item.id})">
+                        </div>`
+                }
+                document.getElementById('todo').innerHTML = txt
+            })
+        }
+        createToDoList()
+
+
+
+
+
+        // POST request create new todo entry 
+        document.getElementById('myForm').addEventListener('submit', function (e) {
+            e.preventDefault()
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(
+                    Object.fromEntries(new FormData(e.target).entries())
+                )
+            }
+            ).then(function (response) {
+                console.log(response)
+                if (response.status == 201) {
+                    createToDoList()
+                    e.target.reset()
+                }
+            })
+        })
+
+
+        // PUT request , modify a entry 
+        function check(id){
+            fetch(url+`${id}/`).then(res => res.json()).then(console.log)
+        }
+
+
+        function check1(e){
+
+        }
+
+
+
+        // DELETE request, remove a entry 
+        function deleteThisTodo(item) {
+            fetch(`${url}${item}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+            }).then(function (response) {
+                console.log(response)
+                if (response.status == 204) {
+                    createToDoList()
+                }
+            })
+        }
+
+    </script>
+
+</body>
+
+</html>
