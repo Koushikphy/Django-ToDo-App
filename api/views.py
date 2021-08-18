@@ -13,5 +13,5 @@ class ToDoViewSets(viewsets.ModelViewSet):
 
 def index(request):
     return render(request, 'index.html',{
-        "myVar" : "Simple to do list"
+        "myVar" : "Simple "
     })
