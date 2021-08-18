@@ -10,7 +10,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Hello, world!</title>
+    <style>
 
+        .completed{
+            text-decoration: line-through;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -52,8 +58,8 @@
             'Content-Type': 'application/json',
             'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
         }
-        
-        
+
+
 
         // GET request, list all todos
         function createToDoList() {
@@ -61,8 +67,8 @@
                 var txt = ''
                 todoList = []
                 for (let item of data) {
-                    txt += `<div>
-                        <input type='checkbox' onclick="checkToDo(${item.id})" class='checkbox' ${ item.completed? "checked" : ""}>
+                    txt += `<div  ${item.completed ? "class='completed'" : ""} >
+                        <input type='checkbox' onclick="checkToDo(${item.id})" ${item.completed ? " checked" : ""} >
                         <strong> ${item.title}</strong> <span>${item.desc}</span>
                         <input type='button' value="X" onclick="deleteThisTodo(${item.id})">
                         </div>`
@@ -98,8 +104,23 @@
 
 
         // PUT request , modify a entry 
-        function check(id){
-            fetch(url+`${id}/`).then(res => res.json()).then(console.log)
+
+        // checking a entry 
+        function checkToDo(id) {
+            fetch(url + `${id}/`).then(res => res.json()).then(function (data) {
+                data.completed = !data.completed
+                // UPDATE the data base, PUT request
+                fetch(url + `${id}/`, {
+                    method: "PUT",
+                    headers: headers,
+                    body: JSON.stringify(data)
+                }).then(function (res) {
+                    console.log(res)
+                    if (res.ok) {
+                        createToDoList()
+                    }
+                })
+            })
         }
 
 
