@@ -28,6 +28,7 @@
         <input type="text" name="desc"><br>
         <input type="number" name="priority"><br>
         <input type="checkbox" name="completed"><br>
+        <input type="file" name="file">
         <input type="submit" value="submit"><br>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -83,15 +84,18 @@
 
 
 
-        // POST request create new todo entry 
+        // // POST request create new todo entry 
         document.getElementById('myForm').addEventListener('submit', function (e) {
             e.preventDefault()
+            
             fetch(url, {
                 method: 'POST',
-                headers: headers,
-                body: JSON.stringify(
-                    Object.fromEntries(new FormData(e.target).entries()) // parse form data to json
-                )
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
+                },
+                body: new FormData(e.target)
+                
+         
             }
             ).then(function (res) {
                 console.log(res)

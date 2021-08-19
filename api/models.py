@@ -8,6 +8,9 @@ class ToDos(models.Model):
     completed = models.BooleanField()
     priority = models.IntegerField(blank=True)
     # also have to add datefield
+    file = models.FileField(null=True, max_length=255)
+
+
 
     def __str__(self) -> str:
         return self.title
