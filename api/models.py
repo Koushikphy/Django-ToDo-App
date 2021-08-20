@@ -1,15 +1,18 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 
 class ToDos(models.Model):
     title = models.CharField(max_length=100)
     desc = models.TextField(blank=True)
     completed = models.BooleanField()
-    priority = models.IntegerField(blank=True)
-    # also have to add datefield
+    priority = models.IntegerField( default=1,
+        choices=[(i,i) for i in range(1,11)])
+    created = models.DateTimeField(auto_now_add=True)
+    datecompleted = models.DateTimeField(null=True, blank=True)
     file = models.FileField(null=True, max_length=255)
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
     def __str__(self) -> str:

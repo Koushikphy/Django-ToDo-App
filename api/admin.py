@@ -3,4 +3,8 @@ from .models import ToDos
 # Register your models here.
 
 
-admin.site.register(ToDos)
+class TodoAdmin(admin.ModelAdmin):
+    readonly_fields = ('created',)
+
+
+admin.site.register(ToDos, TodoAdmin)
