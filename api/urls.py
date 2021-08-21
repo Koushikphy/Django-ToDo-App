@@ -13,7 +13,8 @@ router.register('todo', views.ToDoViewSets, basename='todo')
 urlpatterns = [
     url('api/', include(router.urls)),
     url(r'^$',views.index, name='home'),
-    path('test/', views.getListofTodo, name='test')
+    path('test/', views.getListofTodo, name='test'),
+    path('test/<int:todo_id>', views.getSingleofTodo, name='test1')
 ]
 
 
