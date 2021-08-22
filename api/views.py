@@ -1,4 +1,5 @@
-from django.shortcuts import render,HttpResponse, redirect, get_object_or_404
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
+from django.utils.regex_helper import contains
 from .serializers import ToDoSerializer
 from rest_framework import serializers, viewsets
 from .models import ToDos
@@ -7,17 +8,20 @@ from rest_framework.decorators import api_view
 from django.forms import ModelForm
 from rest_framework.response import Response
 from rest_framework import status
-
-
+import os 
+from rest_framework.permissions import IsAuthenticated
 
 class ToDoViewSets(viewsets.ModelViewSet):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = ToDos.objects.all()
     serializer_class = ToDoSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
 
     def create(self, request, *args, **kwargs):
+        print(request.user,'===============================')
+        print(request.data)
+        # request.data.user = request.user
         ser = self.serializer_class(data=request.data)
         ser.is_valid()
         print(ser.errors)  # force to show errors
@@ -30,6 +34,17 @@ class TodoForm(ModelForm):
     class Meta:
         model = ToDos
         fields = '__all__'
+
+
+def test(request):
+    # directly render content
+    print(os.getcwd())
+    # folder relative to the current folder from which the manage.py is run
+    res =  HttpResponse(content=open('api/admin.py','r'))
+    res['Content-Type'] = 'application/pdf'
+    res['Content-Disposition'] = 'attachment; filename="my.py"' 
+    return res
+
 
 
 def index(request):

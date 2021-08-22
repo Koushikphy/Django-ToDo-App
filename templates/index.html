@@ -9,38 +9,168 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Hello, world!</title>
     <style>
-
-        .completed{
-            text-decoration: line-through;
+        body {
+            padding: 10px;
         }
 
+
+
+        .md:before {
+            content: "\F15A"
+        }
+
+        #root {
+            width: 70%;
+            height: 70%;
+            background-color: antiquewhite;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        #addNew {
+            width: 100%;
+            text-align: center;
+            margin: 5px 0 10px 0;
+        }
+
+        #newitem {
+            width: 50%;
+        }
+
+        #todoArea {
+            width: 70%;
+            margin: auto;
+            padding: 10px;
+        }
+        .inforow{
+            display: flex;
+            flex-direction: row;
+            padding-bottom: 3px;
+        }
+        .todotext{
+            flex-grow: 1;
+            padding-left: 5px;
+        }
+        .duedate{
+            margin-right: 21px;
+            font-style: italic;
+        }
+        .completedate{
+            margin-right: 21px;
+            font-style: italic;
+
+        }
+
+        .checkbox{
+            margin: auto;
+        }
+        .check-container{
+            padding-right: 5px ;
+            border-right: 3px solid black;
+
+        }
+         .closebtn {
+            border: none;
+            float: right;
+            margin-right: 10px;
+            background: none;
+            font-family: cursive;
+    font-style: italic;
+    font-weight: bolder;
+        } 
+
+        .checked {
+            text-decoration: line-through;
+        }
+        .descrow{
+            font-size: .9em;
+    margin-left: 25px;
+        }
     </style>
 </head>
 
 <body>
-    {{ myVar }}
 
-    <div id="todo"></div>
-    <div id="todo1">
-        <div class="item">
-        <div class="cbox">
-            <input type="checkbox">
-        </div>
-        <div class="descarea">
-            
-        </div>
+
+    <div id="root">
+        <h2>Awesome To Do List</h2>
+        <form id="addNew" style="display: flex;flex-direction: row;">
+            <div style="display: flex;flex-direction: column; flex-grow: 1">
+                <div style="display: flex; ;">
+                    <div style="flex-grow: 1; display: flex; align-items: stretch;">
+                        <input style="width: 100%;" type="text" name="title" id="newitem" placeholder="Add new todo here" >
+                    </div>
+                    <div>
+                        <input type="datetime-local" name="date" id="date" placeholder="Due Date">
+                    </div>
+                </div>
+                <div style="display: flex;">
+                    <div style="flex-grow: 1; display: flex; align-items: stretch;">
+                        <textarea name="desc" id="desc" cols="30" rows="3" style="width: 100%;"></textarea>
+                    </div>
+                    <div style="width: 3pc;">
+                        <select name="priority" id="priority">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                    <div>
+
+                    </div>
+                    <input type="file" name="file" id="file" placeholder="Add Attachment">
+                </div>
+
+            </div>
+            <div style="width: 10%; padding: 10px 3px 10px 3px;">
+                <input type="submit" value="Add" class="btn-primary" style="height:100%" onclick="submitToDo(event)">
+            </div>
+        </form>
+        <div id="todoArea">
+            <div class='todoitem'>
+                <div class="inforow">
+                    <div class="check-container">
+                        <input type="checkbox" class="checkbox" checked>
+                    </div>
+                    
+                    <label class="todotext checked"> 
+                        <a href="#" class="attachment">@</a>
+                         My important item 1
+                         
+                    </label>
+                    <label class="duedate">29th Sep</label>
+                    <!-- <button class="attachment"><i class="material-icons">attachment</i></button> -->
+                    <button class='closebtn'>X</button>
+                </div>
+                <div class="descrow">
+                    <label >Description of the todo</label>
+                </div>
+            </div>
+            <div class='todoitem'>
+                <div class="inforow">
+                    <div class="check-container">
+                        <input type="checkbox" class="checkbox">
+                    </div>
+                    <label class="todotext ">@     My important item 1</label>
+                    <label class="duedate">29th Sep</label>
+                    <!-- <button class="attachment"><i class="material-icons">attachment</i></button> -->
+                    <button class='closebtn'>X</button>
+                </div>
+                <div class="descrow">
+                    <label >Description of the todo</label>
+                </div>
+            </div>
         </div>
     </div>
-    <form id='myForm'>
-        <input type="text" name="title"><br>
-        <input type="text" name="desc"><br>
-        <input type="number" name="priority"><br>
-        <input type="checkbox" name="completed"><br>
-        <input type="file" name="file">
-        <input type="submit" value="submit"><br>
-    </form>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
@@ -70,22 +200,75 @@
             'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
         }
 
+        function dtParser(dt){
+            let dd = new Date(dt)
+            return dd.toLocaleDateString() + " " + dd.toLocaleTimeString()
+        }
 
+
+
+
+        function submitToDo(e){
+            e.preventDefault()
+            var dat = new FormData($('form')[0])
+            console.log(dat)
+
+                       fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
+                },
+                body: dat
+
+
+            }
+            ).then(function (res) {
+                console.log(res)
+                if (res.status == 201) {
+                    createToDoList()
+                    e.target.reset()
+                }
+            })
+
+
+
+
+
+        }
 
         // GET request, list all todos
         function createToDoList() {
             fetch(url).then(res => res.json()).then(function (data) {
                 var txt = ''
                 todoList = []
+                console.log(data)
+
+
                 for (let item of data) {
-                    txt += `<div ${item.completed ? "class='completed'" : ""} >
-                        <input type='checkbox' onclick="checkToDo(${item.id})" ${item.completed ? " checked" : ""} >
-                        <strong> ${item.title}</strong> <span>${item.desc}</span>
-                        <input type='button' value="X" onclick="deleteThisTodo(${item.id})">
+                    let date = item.completed? `<label class="completedate">${dtParser(item.datecompleted)}</label>` :
+                     `<label class="duedate">${dtParser(item.duedate)}</label>`
+                    console.log(item.completed)
+                    txt+=`<div class='todoitem ${item.completed ? "checked":""}'>
+                            <div class="inforow">
+                                <div class="check-container">
+                                    <input type="checkbox" class="checkbox" ${item.completed ? "checked":""}>
+                                </div>
+                                <label class="todotext">
+                                    ${item.file!=null ? `<a href="${item.file}" class="attachment">@</a>` : ''}
+                                    ${item.title}
+                                    ${'!'.repeat(item.priority)}
+                                </label>
+                                ${date}
+                                <button class='closebtn'>X</button>
+                            </div>
+                            <div class="descrow">
+                                <label >${item.desc}</label>
+                            </div>
                         </div>`
-                    todoList.push(item)
                 }
-                document.getElementById('todo').innerHTML = txt
+
+
+                document.getElementById('todoArea').innerHTML = txt
             })
         }
         createToDoList()
@@ -95,26 +278,26 @@
 
 
         // // POST request create new todo entry 
-        document.getElementById('myForm').addEventListener('submit', function (e) {
-            e.preventDefault()
-            
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
-                },
-                body: new FormData(e.target)
-                
-         
-            }
-            ).then(function (res) {
-                console.log(res)
-                if (res.status == 201) {
-                    createToDoList()
-                    e.target.reset()
-                }
-            })
-        })
+        // document.getElementById('myForm').addEventListener('submit', function (e) {
+        //     e.preventDefault()
+
+        //     fetch(url, {
+        //         method: 'POST',
+        //         headers: {
+        //             'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
+        //         },
+        //         body: new FormData(e.target)
+
+
+        //     }
+        //     ).then(function (res) {
+        //         console.log(res)
+        //         if (res.status == 201) {
+        //             createToDoList()
+        //             e.target.reset()
+        //         }
+        //     })
+        // })
 
 
         // PUT request , modify a entry 

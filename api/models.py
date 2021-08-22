@@ -8,10 +8,11 @@ class ToDos(models.Model):
     desc = models.TextField(blank=True)
     completed = models.BooleanField()
     priority = models.IntegerField( default=1,
-        choices=[(i,i) for i in range(1,11)])
+        choices=[(i,i) for i in range(1,4)])
     created = models.DateTimeField(auto_now_add=True)
     datecompleted = models.DateTimeField(null=True, blank=True)
-    file = models.FileField(null=True, max_length=255)
+    duedate= models.DateTimeField(null=True, blank=True)
+    file = models.FileField(null=True, blank=True, max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 

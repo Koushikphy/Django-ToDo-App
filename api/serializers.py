@@ -4,6 +4,8 @@ from .models import ToDos
 
 
 class ToDoSerializer(serializers.ModelSerializer):
+
+
     class Meta:
         model = ToDos
         fields = '__all__'
