@@ -17,13 +17,20 @@ class ToDoViewSets(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
 
+    def create(self, request, *args, **kwargs):
+        ser = self.serializer_class(data=request.data)
+        ser.is_valid()
+        print(ser.errors)  # force to show errors
+        return super().create(request, *args, **kwargs)
+
+
+
+
 class TodoForm(ModelForm):
     class Meta:
         model = ToDos
         fields = '__all__'
 
-
- 
 
 def index(request):
     return render(request, 'index.html',{
@@ -45,6 +52,21 @@ def getSingleofTodo(request,todo_id):
     todo = ToDos.objects.get(pk=todo_id)
     serializer = ToDoSerializer(todo)
     return Response(serializer.data)
+
+
+@api_view(['POST',"GET"])
+def putTodo(request):
+    if request.method =='POST':
+        serializer = ToDoSerializer(request.data)
+        if serializer.is_valid():
+            serializer.save()
+    else:
+        todo = ToDos.objects.all()
+        serializer = ToDoSerializer(todo, many=True)
+        return Response(serializer.data)
+
+
+
 
 
 

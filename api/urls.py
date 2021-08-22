@@ -14,7 +14,8 @@ urlpatterns = [
     url('api/', include(router.urls)),
     url(r'^$',views.index, name='home'),
     path('test/', views.getListofTodo, name='test'),
-    path('test/<int:todo_id>', views.getSingleofTodo, name='test1')
+    path('test/<int:todo_id>', views.getSingleofTodo, name='test1'),
+    path('testp/', views.putTodo, name='test2')
 ]
 
 
