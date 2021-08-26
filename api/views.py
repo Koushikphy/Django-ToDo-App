@@ -11,11 +11,17 @@ from rest_framework import status
 import os 
 from rest_framework.permissions import IsAuthenticated
 
+
+
+
 class ToDoViewSets(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = ToDos.objects.all()
     serializer_class = ToDoSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
+
+
+
 
 
     def create(self, request, *args, **kwargs):
