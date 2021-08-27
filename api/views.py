@@ -1,6 +1,7 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.utils.regex_helper import contains
-from .serializers import ToDoSerializer
+from .serializers import ToDoSerializer, UserSerializer
 from rest_framework import serializers, viewsets
 from .models import ToDos
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -10,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import os 
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
 
@@ -19,7 +20,7 @@ class ToDoViewSets(viewsets.ModelViewSet):
     queryset = ToDos.objects.all()
     serializer_class = ToDoSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
-
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
 
 
@@ -32,6 +33,14 @@ class ToDoViewSets(viewsets.ModelViewSet):
         ser.is_valid()
         print(ser.errors)  # force to show errors
         return super().create(request, *args, **kwargs)
+
+
+
+
+class UserViewSets(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
 
 
 
