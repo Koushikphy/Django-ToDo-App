@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+
+{% block signup %}
+
+<style>
+#registerInForm{
+    display: none
+}
+
+</style>
+
+<form id="registerInForm">
+  <div class="form-group">
+    <label for="exampleInputPassword1">Username</label>
+    <input type="text" class="form-control" placeholder="Username" name='username'>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email", name='email'>
+    {% comment %} <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> {% endcomment %}
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" placeholder="Password" name='password'>
+  </div>
+  <div class="form-group">
+  <small>Already have an account <a href="#" onclick=enableLogIn()>Log In</a> here</small>
+  </div>
+  <button type="submit" class="btn btn-primary" onclick="RegisterUser(event)">Register</button>
+</form>
+
+<form id="logInForm">
+    <div class="form-group">
+        <label for="exampleInputPassword1">Username</label>
+        <input type="text" class="form-control" placeholder="Username" name='username'>
+      </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" placeholder="Password"  name='password'>
+  </div>
+  <div class="form-group">
+  <small>Don't have an account <a href="#"  onclick=enableRegister()>Register</a> here</small>
+  </div>
+  <button type="submit" class="btn btn-primary"  onclick="LogInUser(event)">LogIn</button>
+</form>
+
+
+<script>
+        const url = "/"
+
+function enableRegister(){
+    document.getElementById('logInForm').style.display = 'none'
+    document.getElementById('registerInForm').style.display = 'block'
+}
+
+function enableLogIn(){
+    document.getElementById('logInForm').style.display = 'block'
+    document.getElementById('registerInForm').style.display = 'none'
+}
+
+
+
+
+
+        // cokie validation
+        function getCookie(name) { // copied from django doc
+            if (!document.cookie) {
+                return null;
+            }
+            const token = document.cookie.split(';')
+                .map(c => c.trim())
+                .filter(c => c.startsWith(name + '='));
+
+            if (token.length === 0) {
+                return null;
+            }
+            return decodeURIComponent(token[0].split('=')[1]);
+        }
+        const headers = {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
+        }
+
+        function RegisterUser(e) {
+            e.preventDefault()
+            var dat = new FormData($('#registerInForm')[0])
+
+            fetch(url + 'register/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
+                },
+                body: dat
+            }).then(function (res) {
+                console.log(res)
+                if (res.status = 200) {
+
+                    window.location.href = '/'
+                }
+            })
+        }
+
+
+
+
+
+
+        function LogInUser(e) {
+            e.preventDefault()
+            var dat = new FormData($('#logInForm')[0])
+
+            fetch(url + 'login/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
+                },
+                body: dat
+            }).then(function (res) {
+                console.log(res)
+                if (res.status = 200) {
+                    window.location.href = '/'
+                }
+            })
+        }
+
+</script>
+{% endblock %}

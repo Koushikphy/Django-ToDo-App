@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-l=v7b&+-mz@2h$*&*8eapdv4u#=8x7_m()6xx8^@4#hd0%reju
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['desktop-o5ipq72','127.0.0.1']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
+    'knox'
 ]
 
 MIDDLEWARE = [
@@ -91,6 +92,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'knox.auth.TokenAuthentication',
     ]
  }
 # Password validation

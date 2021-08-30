@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.utils.regex_helper import contains
-from .serializers import ToDoSerializer, UserSerializer
-from rest_framework import serializers, viewsets
+from .serializers import LoginSerializer, RegistrationSerializer, ToDoSerializer, UserSerializer
+from rest_framework import fields, serializers, viewsets
 from .models import ToDos
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.decorators import api_view
@@ -12,6 +12,11 @@ from rest_framework import status
 import os 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from knox.models import AuthToken
+from rest_framework import generics
+from django.contrib.auth import authenticate, login, logout
+
+
 
 
 
@@ -23,7 +28,8 @@ class ToDoViewSets(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
 
 
-
+    def get_queryset(self):
+        return ToDos.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         print(request.user,'===============================')
@@ -37,63 +43,120 @@ class ToDoViewSets(viewsets.ModelViewSet):
 
 
 
-class UserViewSets(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-
-
-
 class TodoForm(ModelForm):
     class Meta:
         model = ToDos
         fields = '__all__'
 
 
-def test(request):
-    # directly render content
-    print(os.getcwd())
-    # folder relative to the current folder from which the manage.py is run
-    res =  HttpResponse(content=open('api/admin.py','r'))
-    res['Content-Type'] = 'application/pdf'
-    res['Content-Disposition'] = 'attachment; filename="my.py"' 
-    return res
+
+
+@api_view(["POST"])
+def logOutUser(request):
+    logout(request)
+    return Response({
+        "logout": "success"
+    })
+
+
+class RegisterUserView(generics.GenericAPIView):
+    serializer_class = RegistrationSerializer
+
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        _, token = AuthToken.objects.create(user)
+        # login(request, user)  # if you readily want to login the user after register
+        return Response({
+            "user" : UserSerializer(user, context=self.get_serializer_context()).data,
+            "token":token
+        })
+
+
+
+
+class LoginUserView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        print(request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        print(user,'==================')
+        login(request, user)
+        _, token = AuthToken.objects.create(user)
+        return Response({
+            "user" : UserSerializer(user, context=self.get_serializer_context()).data,
+            "token":token
+        })
+
+
 
 
 
 def index(request):
-    return render(request, 'index.html',{
-        "myVar" : "Simple ",
-        'form':TodoForm()
-    })
+    # return render(request, 'base.html')
+    # return render(request, 'index.html')
 
-
-
-@api_view(['GET'])
-def getListofTodo(request):
-    todo = ToDos.objects.all()
-    serializer = ToDoSerializer(todo, many=True)
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-def getSingleofTodo(request,todo_id):
-    todo = ToDos.objects.get(pk=todo_id)
-    serializer = ToDoSerializer(todo)
-    return Response(serializer.data)
-
-
-@api_view(['POST',"GET"])
-def putTodo(request):
-    if request.method =='POST':
-        serializer = ToDoSerializer(request.data)
-        if serializer.is_valid():
-            serializer.save()
+    # print(request.user, request.user.is_authenticated)
+    if(request.user.is_authenticated) :
+        return render(request, 'index.html')
     else:
-        todo = ToDos.objects.all()
-        serializer = ToDoSerializer(todo, many=True)
-        return Response(serializer.data)
+        return render(request, 'user.html')
+
+
+
+# class UserViewSets(viewsets.ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+
+
+
+
+
+
+# class UserForm(ModelForm):
+#     class Meta:
+#         model = User
+#         fields = ('username', 'email', 'password')
+
+
+
+# def userView(request):
+#     return render(request,'user.html',{
+#         "form" : UserForm
+#     })
+
+
+
+
+# @api_view(['GET'])
+# def getListofTodo(request):
+#     todo = ToDos.objects.all()
+#     serializer = ToDoSerializer(todo, many=True)
+#     return Response(serializer.data)
+
+
+# @api_view(['GET'])
+# def getSingleofTodo(request,todo_id):
+#     todo = ToDos.objects.get(pk=todo_id)
+#     serializer = ToDoSerializer(todo)
+#     return Response(serializer.data)
+
+
+# @api_view(['POST',"GET"])
+# def putTodo(request):
+#     if request.method =='POST':
+#         serializer = ToDoSerializer(request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#     else:
+#         todo = ToDos.objects.all()
+#         serializer = ToDoSerializer(todo, many=True)
+#         return Response(serializer.data)
 
 
 

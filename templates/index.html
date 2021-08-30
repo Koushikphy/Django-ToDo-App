@@ -1,21 +1,12 @@
-<!doctype html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block todolist %}
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <title>Hello, world!</title>
+
+
+
     <style>
-        body {
-            padding: 10px;
-        }
-
 
 
         .md:before {
@@ -44,67 +35,95 @@
         }
 
         #todoArea {
-            width: 70%;
+            width: 90%;
             margin: auto;
             padding: 10px;
         }
-        .inforow{
+
+        .inforow {
             display: flex;
             flex-direction: row;
             padding-bottom: 3px;
         }
-        .todotext{
+
+        .todotext {
             flex-grow: 1;
             padding-left: 5px;
         }
-        .duedate{
+
+        .duedate {
             margin-right: 21px;
             font-style: italic;
         }
-        .completedate{
+
+        .completedate {
             margin-right: 21px;
             font-style: italic;
 
         }
 
-        .checkbox{
+        .checkbox {
             margin: auto;
         }
-        .check-container{
-            padding-right: 5px ;
+
+        .check-container {
+            padding-right: 5px;
             border-right: 3px solid black;
 
         }
-         .closebtn {
+
+        .closebtn {
             border: none;
             float: right;
             margin-right: 10px;
             background: none;
             font-family: cursive;
-    font-style: italic;
-    font-weight: bolder;
-        } 
+            font-style: italic;
+            font-weight: bolder;
+        }
 
         .checked {
             text-decoration: line-through;
         }
-        .descrow{
+
+        .descrow {
             font-size: .9em;
-    margin-left: 25px;
+            margin-left: 25px;
         }
     </style>
 </head>
 
 <body>
 
-
     <div id="root">
         <h2>Awesome To Do List</h2>
+
+
+        <form>
+        <div class="form-group">
+            <label >Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+
+
         <form id="addNew" style="display: flex;flex-direction: row;">
             <div style="display: flex;flex-direction: column; flex-grow: 1">
                 <div style="display: flex; ;">
                     <div style="flex-grow: 1; display: flex; align-items: stretch;">
-                        <input style="width: 100%;" type="text" name="title" id="newitem" placeholder="Add new todo here" >
+                        <input style="width: 100%;" type="text" name="title" id="newitem"
+                            placeholder="Add new todo here">
                     </div>
                     <div>
                         <input type="datetime-local" name="date" id="date" placeholder="Due Date">
@@ -132,24 +151,24 @@
                 <input type="submit" value="Add" class="btn-primary" style="height:100%" onclick="submitToDo(event)">
             </div>
         </form>
-        <div id="todoArea">
-            <div class='todoitem'>
+        <div id="todoArea" class="list-group">
+            {% comment %} <div class='todoitem'>
                 <div class="inforow">
                     <div class="check-container">
                         <input type="checkbox" class="checkbox" checked>
                     </div>
-                    
-                    <label class="todotext checked"> 
+
+                    <label class="todotext checked">
                         <a href="#" class="attachment">@</a>
-                         My important item 1
-                         
+                        My important item 1
+
                     </label>
                     <label class="duedate">29th Sep</label>
                     <!-- <button class="attachment"><i class="material-icons">attachment</i></button> -->
                     <button class='closebtn'>X</button>
                 </div>
                 <div class="descrow">
-                    <label >Description of the todo</label>
+                    <label>Description of the todo</label>
                 </div>
             </div>
             <div class='todoitem'>
@@ -157,19 +176,18 @@
                     <div class="check-container">
                         <input type="checkbox" class="checkbox">
                     </div>
-                    <label class="todotext ">@     My important item 1</label>
+                    <label class="todotext ">@ My important item 1</label>
                     <label class="duedate">29th Sep</label>
                     <!-- <button class="attachment"><i class="material-icons">attachment</i></button> -->
                     <button class='closebtn'>X</button>
                 </div>
                 <div class="descrow">
-                    <label >Description of the todo</label>
+                    <label>Description of the todo</label>
                 </div>
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -200,20 +218,32 @@
             'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
         }
 
-        function dtParser(dt){
+        function dtParser(dt) {
             let dd = new Date(dt)
             return dd.toLocaleDateString() + " " + dd.toLocaleTimeString()
         }
 
+        function logOutUser(){
+            fetch('/logout/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
+                },
+                data:{}
+            }).then(function (res) {
+                window.location.href='/'
+            }
+            )
+        }
 
 
 
-        function submitToDo(e){
+        function submitToDo(e) {
             e.preventDefault()
             var dat = new FormData($('form')[0])
             console.log(dat)
 
-                       fetch(url, {
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
@@ -229,12 +259,11 @@
                     e.target.reset()
                 }
             })
-
-
-
-
-
         }
+
+
+
+
 
         // GET request, list all todos
         function createToDoList() {
@@ -245,21 +274,21 @@
 
 
                 for (let item of data) {
-                    let date = item.completed? `<label class="completedate">${dtParser(item.datecompleted)}</label>` :
-                     `<label class="duedate">${dtParser(item.duedate)}</label>`
+                    let date = item.completed ? `<label class="completedate">${dtParser(item.datecompleted)}</label>` :
+                        `<label class="duedate">${dtParser(item.duedate)}</label>`
                     console.log(item.completed)
-                    txt+=`<div class='todoitem ${item.completed ? "checked":""}'>
+                    txt += `<div class='list-group-item todoitem ${item.completed ? "checked" : ""}'>
                             <div class="inforow">
                                 <div class="check-container">
-                                    <input type="checkbox" class="checkbox" ${item.completed ? "checked":""}>
+                                    <input type="checkbox" class="checkbox" ${item.completed ? "checked" : ""}>
                                 </div>
                                 <label class="todotext">
-                                    ${item.file!=null ? `<a href="${item.file}" class="attachment">@</a>` : ''}
+                                    ${item.file != null ? `<a href="${item.file}" class="attachment">@</a>` : ''}
                                     ${item.title}
                                     ${'!'.repeat(item.priority)}
                                 </label>
                                 ${date}
-                                <button class='closebtn'>X</button>
+                                <button class='closebtn' onclick="deleteThisTodo(${item.id})">X</button>
                             </div>
                             <div class="descrow">
                                 <label >${item.desc}</label>
@@ -275,29 +304,6 @@
 
 
 
-
-
-        // // POST request create new todo entry 
-        // document.getElementById('myForm').addEventListener('submit', function (e) {
-        //     e.preventDefault()
-
-        //     fetch(url, {
-        //         method: 'POST',
-        //         headers: {
-        //             'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
-        //         },
-        //         body: new FormData(e.target)
-
-
-        //     }
-        //     ).then(function (res) {
-        //         console.log(res)
-        //         if (res.status == 201) {
-        //             createToDoList()
-        //             e.target.reset()
-        //         }
-        //     })
-        // })
 
 
         // PUT request , modify a entry 
@@ -337,6 +343,4 @@
 
     </script>
 
-</body>
-
-</html>
+{% endblock %}
