@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 
-{% block todolist %}
+{% block content %}
 
 
 
@@ -100,24 +100,46 @@
 
 
         <form>
-        <div class="form-group">
-            <label >Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-        </div>
-        <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+            <!-- <div class="form-group">
+                <label >Email address</label>
+                <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control"  placeholder="Password">
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+            </div>
+ -->
+
+
+            <div class="form-group">
+                    <input type="text" name="title" id="newitem" placeholder="Add new todo here" class="form-control" >
+            </div>
+            <div class="form-group">
+                <textarea name="desc" id="desc" cols="30" rows="1" placeholder="Add Description" class="form-control" ></textarea>
+            </div>
+            <div class="form-group">
+                <input type="datetime-local" name="date" id="date" placeholder="Due Date">
+            </div>
+            <div class="form-group">
+                <select name="priority" id="priority">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="file" name="file" id="file" placeholder="Add Attachment">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add New</button>
         </form>
 
 
-
+<!-- 
         <form id="addNew" style="display: flex;flex-direction: row;">
             <div style="display: flex;flex-direction: column; flex-grow: 1">
                 <div style="display: flex; ;">
@@ -150,7 +172,9 @@
             <div style="width: 10%; padding: 10px 3px 10px 3px;">
                 <input type="submit" value="Add" class="btn-primary" style="height:100%" onclick="submitToDo(event)">
             </div>
-        </form>
+        </form> -->
+
+        
         <div id="todoArea" class="list-group">
             {% comment %} <div class='todoitem'>
                 <div class="inforow">
@@ -280,7 +304,7 @@
                     txt += `<div class='list-group-item todoitem ${item.completed ? "checked" : ""}'>
                             <div class="inforow">
                                 <div class="check-container">
-                                    <input type="checkbox" class="checkbox" ${item.completed ? "checked" : ""}>
+                                    <input type="checkbox" onclick='checkToDo(${item.id})' class="checkbox" ${item.completed ? "checked" : ""}>
                                 </div>
                                 <label class="todotext">
                                     ${item.file != null ? `<a href="${item.file}" class="attachment">@</a>` : ''}

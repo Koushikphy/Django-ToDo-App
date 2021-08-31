@@ -9,8 +9,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <link rel="icon" type="image/png"  href="{% static 'todo/logo.png' %}">
-    <title>Todo Woo</title>
+    <link rel="icon" type="image/png"  href="{% static 'logo.png' %}">
+    <title>Awesome todo-list</title>
 </head>
 <body>
 
@@ -18,46 +18,21 @@
 <nav class="navbar navbar-expand-md navbar-light bg-warning">
 <div class="container">
     <a class="navbar-brand" href="#">
-         {% comment %} <img src="{% static 'todo/logo.png' %}" width="30" height="30" class="d-inline-block align-top"> {% endcomment %}
+        <span>Awesome ToDo List  </span>
         {% if user.is_authenticated %}
-        <span>Hi There, {{user}}</span>
-        {% else %}
-        <span>Awesome ToDo List</span>
+            <span> Hi There, {{user}}</span>
         {% endif %}
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-    {% comment %} {% if user.is_authenticated %}
-        <ul class="navbar-nav mr-auto">
 
-                <li class="nav-item {{ current }}">
-                    <a class="nav-link" href="{% url 'currenttodos' %}">Current</a>
-                </li>
-                <li class="nav-item {{ completed }}">
-                    <a class="nav-link" href="{% url 'completedtodos' %}">Completed</a>
-                </li>
-                <li class="nav-item {{ create }}">
-                    <a class="nav-link" href="{% url 'createtodo' %}">Create</a>
-                </li>
-
-        </ul>
-    {% endif %} {% endcomment %}
     <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a href="#" onclick="logOutUser()" class="nav-link">Logout</a>
                 </li>
-            {% comment %} {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'signupuser' %}">Sign Up</a>
-                    <a class="nav-link" href="#">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
-                    <a class="nav-link" href="{% url 'loginuser' %}">Login</a>
-                </li> {% endcomment %}
             {% endif %}
         </ul>
     </div>
@@ -66,19 +41,20 @@
 
 
 
-
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show my-0" role="alert">
+  <strong>{{ message }}</strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+ {% endfor %}
+{% endif %}
 
 
 
 <div class="container my-5 px-5">
-
-{% if user.is_authenticated %}
-{% block todolist %}{% endblock %}
-{% else %}
-{% block signup %}{% endblock %}
-{% endif %}
-
-
 {% block content %}{% endblock %}
 </div>
 

@@ -12,9 +12,10 @@ from rest_framework import status
 import os 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from knox.models import AuthToken
+# from knox.models import AuthToken
 from rest_framework import generics
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 
 
@@ -32,9 +33,8 @@ class ToDoViewSets(viewsets.ModelViewSet):
         return ToDos.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        print(request.user,'===============================')
         print(request.data)
-        # request.data.user = request.user
+
         ser = self.serializer_class(data=request.data)
         ser.is_valid()
         print(ser.errors)  # force to show errors
@@ -67,11 +67,11 @@ class RegisterUserView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        _, token = AuthToken.objects.create(user)
+        # _, token = AuthToken.objects.create(user)
         # login(request, user)  # if you readily want to login the user after register
         return Response({
             "user" : UserSerializer(user, context=self.get_serializer_context()).data,
-            "token":token
+            # "token":token
         })
 
 
@@ -83,15 +83,22 @@ class LoginUserView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         print(request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
-        print(user,'==================')
-        login(request, user)
-        _, token = AuthToken.objects.create(user)
-        return Response({
-            "user" : UserSerializer(user, context=self.get_serializer_context()).data,
-            "token":token
-        })
+        if not serializer.is_valid():
+            print(serializer.errors)
+            messages.warning(request,"Invalid username, password")
+            return Response({
+                "error": "invalid username password"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user = serializer.validated_data
+            print(user,'==================')
+            login(request, user)
+            # messages.success(request, "Log in success")
+            # _, token = AuthToken.objects.create(user)
+            return Response({
+                "user" : UserSerializer(user, context=self.get_serializer_context()).data,
+                # "token":token
+            })
 
 
 
