@@ -6,211 +6,139 @@
 
 
 
-    <style>
+<style>
+    .md:before {
+        content: "\F15A"
+    }
+
+    #root {
+        width: 70%;
+        height: 70%;
+        background-color: antiquewhite;
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+        border: 1px solid black;
+        padding: 5px;
+    }
+
+    #addNew {
+        width: 100%;
+        text-align: center;
+        margin: 5px 0 10px 0;
+    }
+
+    #newitem {
+        width: 50%;
+    }
+
+    #todoArea {
+        width: 90%;
+        margin: auto;
+        padding: 10px;
+    }
+
+    .inforow {
+        display: flex;
+        flex-direction: row;
+        padding-bottom: 3px;
+    }
+
+    .todotext {
+        flex-grow: 1;
+        padding-left: 5px;
+    }
+
+    .duedate {
+        margin-right: 21px;
+        font-style: italic;
+    }
+
+    .completedate {
+        margin-right: 21px;
+        font-style: italic;
+
+    }
+
+    .checkbox {
+        margin: auto;
+    }
+
+    .check-container {
+        padding-right: 5px;
+        border-right: 3px solid black;
+
+    }
+
+    .closebtn {
+        border: none;
+        float: right;
+        margin-right: 10px;
+        background: none;
+        font-family: cursive;
+        font-style: italic;
+        font-weight: bolder;
+    }
+
+    .checked {
+        text-decoration: line-through;
+    }
+
+    .descrow {
+        font-size: .9em;
+        margin-left: 25px;
+    }
 
 
-        .md:before {
-            content: "\F15A"
-        }
+    #inp {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        grid-template-rows: repeat(5, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
+        padding: 2px;
+    }
 
-        #root {
-            width: 70%;
-            height: 70%;
-            background-color: antiquewhite;
-            display: flex;
-            flex-direction: column;
-            margin: auto;
-            border: 1px solid black;
-            padding: 5px;
-        }
+    #inp>* {
+        margin-bottom: 2px;
+    }
+</style>
 
-        #addNew {
-            width: 100%;
-            text-align: center;
-            margin: 5px 0 10px 0;
-        }
-
-        #newitem {
-            width: 50%;
-        }
-
-        #todoArea {
-            width: 90%;
-            margin: auto;
-            padding: 10px;
-        }
-
-        .inforow {
-            display: flex;
-            flex-direction: row;
-            padding-bottom: 3px;
-        }
-
-        .todotext {
-            flex-grow: 1;
-            padding-left: 5px;
-        }
-
-        .duedate {
-            margin-right: 21px;
-            font-style: italic;
-        }
-
-        .completedate {
-            margin-right: 21px;
-            font-style: italic;
-
-        }
-
-        .checkbox {
-            margin: auto;
-        }
-
-        .check-container {
-            padding-right: 5px;
-            border-right: 3px solid black;
-
-        }
-
-        .closebtn {
-            border: none;
-            float: right;
-            margin-right: 10px;
-            background: none;
-            font-family: cursive;
-            font-style: italic;
-            font-weight: bolder;
-        }
-
-        .checked {
-            text-decoration: line-through;
-        }
-
-        .descrow {
-            font-size: .9em;
-            margin-left: 25px;
-        }
-    </style>
 </head>
 
 <body>
 
-    <div id="root">
-        <h2>Awesome To Do List</h2>
+    <div id="root" class="bg-light card-columns">
+        {% if user.is_authenticated %}
+        <h3 class="bg-success card text-capitalize"> Hi There, {{user}}</h3>
+        {% endif %}
 
 
-        <form>
-            <!-- <div class="form-group">
-                <label >Email address</label>
-                <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control"  placeholder="Password">
-            </div>
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
- -->
-
-
-            <div class="form-group">
-                    <input type="text" name="title" id="newitem" placeholder="Add new todo here" class="form-control" >
-            </div>
-            <div class="form-group">
-                <textarea name="desc" id="desc" cols="30" rows="1" placeholder="Add Description" class="form-control" ></textarea>
-            </div>
-            <div class="form-group">
-                <input type="datetime-local" name="date" id="date" placeholder="Due Date">
-            </div>
-            <div class="form-group">
-                <select name="priority" id="priority">
+        <form class="card py-2">
+            <div id="inp">
+                <label for="newitem">New Todo</label>
+                <input type="text" name="title" id="newitem" placeholder="Add new todo here" class="form-control">
+                <label for="desc">Description</label>
+                <textarea name="desc" id="desc" cols="30" rows="1" placeholder="Add Description"
+                    class="form-control"></textarea>
+                <label for="date">Due Date</label>
+                <input type="datetime-local" name="date" id="date" placeholder="Due Date" class="w-50">
+                <label for="priority">Priority</label>
+                <select name="priority" id="priority" class="w-25">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
                 </select>
-            </div>
-            <div class="form-group">
+                <label for="file">Attachment</label>
                 <input type="file" name="file" id="file" placeholder="Add Attachment">
             </div>
-
-            <button type="submit" class="btn btn-primary">Add New</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" onclick="submitToDo(event)">Add New</button>
+            </div>
         </form>
 
 
-<!-- 
-        <form id="addNew" style="display: flex;flex-direction: row;">
-            <div style="display: flex;flex-direction: column; flex-grow: 1">
-                <div style="display: flex; ;">
-                    <div style="flex-grow: 1; display: flex; align-items: stretch;">
-                        <input style="width: 100%;" type="text" name="title" id="newitem"
-                            placeholder="Add new todo here">
-                    </div>
-                    <div>
-                        <input type="datetime-local" name="date" id="date" placeholder="Due Date">
-                    </div>
-                </div>
-                <div style="display: flex;">
-                    <div style="flex-grow: 1; display: flex; align-items: stretch;">
-                        <textarea name="desc" id="desc" cols="30" rows="3" style="width: 100%;"></textarea>
-                    </div>
-                    <div style="width: 3pc;">
-                        <select name="priority" id="priority">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-                    </div>
-                    <div>
-
-                    </div>
-                    <input type="file" name="file" id="file" placeholder="Add Attachment">
-                </div>
-
-            </div>
-            <div style="width: 10%; padding: 10px 3px 10px 3px;">
-                <input type="submit" value="Add" class="btn-primary" style="height:100%" onclick="submitToDo(event)">
-            </div>
-        </form> -->
-
-        
-        <div id="todoArea" class="list-group">
-            {% comment %} <div class='todoitem'>
-                <div class="inforow">
-                    <div class="check-container">
-                        <input type="checkbox" class="checkbox" checked>
-                    </div>
-
-                    <label class="todotext checked">
-                        <a href="#" class="attachment">@</a>
-                        My important item 1
-
-                    </label>
-                    <label class="duedate">29th Sep</label>
-                    <!-- <button class="attachment"><i class="material-icons">attachment</i></button> -->
-                    <button class='closebtn'>X</button>
-                </div>
-                <div class="descrow">
-                    <label>Description of the todo</label>
-                </div>
-            </div>
-            <div class='todoitem'>
-                <div class="inforow">
-                    <div class="check-container">
-                        <input type="checkbox" class="checkbox">
-                    </div>
-                    <label class="todotext ">@ My important item 1</label>
-                    <label class="duedate">29th Sep</label>
-                    <!-- <button class="attachment"><i class="material-icons">attachment</i></button> -->
-                    <button class='closebtn'>X</button>
-                </div>
-                <div class="descrow">
-                    <label>Description of the todo</label>
-                </div>
-            </div> {% endcomment %}
-        </div>
-    </div>
+        <div id="todoArea" class="list-group"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -238,7 +166,7 @@
             return decodeURIComponent(token[0].split('=')[1]);
         }
         const headers = {
-            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/json',
             'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
         }
 
@@ -247,15 +175,15 @@
             return dd.toLocaleDateString() + " " + dd.toLocaleTimeString()
         }
 
-        function logOutUser(){
+        function logOutUser() {
             fetch('/logout/', {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
                 },
-                data:{}
+                data: {}
             }).then(function (res) {
-                window.location.href='/'
+                window.location.href = '/'
             }
             )
         }
@@ -265,7 +193,8 @@
         function submitToDo(e) {
             e.preventDefault()
             var dat = new FormData($('form')[0])
-            console.log(dat)
+            console.log('----------------------',Object.fromEntries(new FormData($('form')[0])))
+
 
             fetch(url, {
                 method: 'POST',
@@ -273,8 +202,6 @@
                     'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
                 },
                 body: dat
-
-
             }
             ).then(function (res) {
                 console.log(res)
@@ -307,9 +234,11 @@
                                     <input type="checkbox" onclick='checkToDo(${item.id})' class="checkbox" ${item.completed ? "checked" : ""}>
                                 </div>
                                 <label class="todotext">
-                                    ${item.file != null ? `<a href="${item.file}" class="attachment">@</a>` : ''}
-                                    ${item.title}
                                     ${'!'.repeat(item.priority)}
+                                    ${item.title}
+                                    ${item.file != null ? `<a href="${item.file}" target='_blank' class="attachment">
+                                        <img src='static/lg.svg'>
+                                        </a>` : ''}
                                 </label>
                                 ${date}
                                 <button class='closebtn' onclick="deleteThisTodo(${item.id})">X</button>
@@ -319,8 +248,6 @@
                             </div>
                         </div>`
                 }
-
-
                 document.getElementById('todoArea').innerHTML = txt
             })
         }
@@ -334,21 +261,49 @@
 
         // checking a entry 
         function checkToDo(id) {
-            fetch(url + `${id}/`).then(res => res.json()).then(function (data) {
-                data.completed = !data.completed
-                // UPDATE the data base, PUT request
-                fetch(url + `${id}/`, {
-                    method: "PUT",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                }).then(function (res) {
-                    console.log(res)
-                    if (res.ok) {
-                        createToDoList()
-                    }
+            console.log(id)
+            fetch(url + `${id}/`)
+                .then(res => res.json())
+                .then(function (data) {
+                    data.completed = !data.completed
+                    fetch(data.file).then(res => res.blob()).then(
+                        function (fileData) {
+                            data.file = new File([fileData], '')
+                            data.datecompleted = new Date().toISOString()
+                            console.log(data)
+                            var form_data = new FormData();
+
+                            for (var key in data) {
+                                form_data.append(key, data[key]);
+                            }
+
+                            fetch(url + `${id}/`, {
+                                method: "PATCH",
+                                headers: {
+                                    // 'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
+                                },
+                                body: form_data //JSON.stringify(data)
+                            }).then(
+                                console.log
+                            )
+                        }
+                    )
                 })
-            })
         }
+
+
+        // fetch(url+'17/',{
+        //     method: "PATCH",
+        //     headers: {
+        //             // 'Content-Type': 'application/json',
+        //             'X-CSRFToken': "BRAbfkqjWR4JX74qXBkFOpkv1KZeQTEVmtz39Od3nzlMvB0r3vbtq0RggicLPwsN" //getCookie('csrftoken')
+        //         },
+        //         body:{
+        //             'completed' : true
+        //         }
+        // })
+
 
 
 
@@ -367,4 +322,4 @@
 
     </script>
 
-{% endblock %}
+    {% endblock %}

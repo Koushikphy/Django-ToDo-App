@@ -9,15 +9,15 @@ from rest_framework.decorators import api_view
 from django.forms import ModelForm
 from rest_framework.response import Response
 from rest_framework import status
-import os 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 # from knox.models import AuthToken
 from rest_framework import generics
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
-
+from datetime import datetime
+from django.utils.timezone import now
+from django.utils import timezone
 
 
 
@@ -33,20 +33,44 @@ class ToDoViewSets(viewsets.ModelViewSet):
         return ToDos.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
+        # request.data[] = 
         print(request.data)
-
         ser = self.serializer_class(data=request.data)
         ser.is_valid()
         print(ser.errors)  # force to show errors
         return super().create(request, *args, **kwargs)
 
 
+    def update(self, request, *args, **kwargs):
+        # request.data["datecompleted"] = now()
+        # request.data.update({})
+
+        print(request.data,'huihuihuihui===================')
+        ser = self.serializer_class(data=request.data)
+        ser.is_valid()
+        print(ser.errors)  # force to show error
+        return super().update(request, *args, **kwargs)
 
 
-class TodoForm(ModelForm):
-    class Meta:
-        model = ToDos
-        fields = '__all__'
+
+    def partial_update(self, request, *args, **kwargs):
+        print('-------------------here-----------------------')
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        print(serializer.data)
+        print('ppppppppppppppppppppppppppppppppppppppppppppppppp')
+        serializer.is_valid()
+        print(serializer.errors)
+        new_instance = serializer.save()
+        return Response(serializer.data)
+
+
+
+
+# class TodoForm(ModelForm):
+#     class Meta:
+#         model = ToDos
+#         fields = '__all__'
 
 
 
