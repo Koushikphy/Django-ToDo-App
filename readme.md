@@ -2,11 +2,13 @@
 ### A To Do App & API built with Django 3 and django-rest-framework
 ---
 
-<img height='250em' src='./static/login.png'>
-<img height='250em'  src='./static/dash.png'>  
-
 
 This project is not meant for yet another fancy To Do application, but to provide a boilerplate to quickly get started with Django 3 as backend and setup django-rest-framework as a RESTful API.  
+
+Log In Page             |  Home Page
+:-------------------------:|:-------------------------:
+![](./static/login.png)  |  ![](./static/dash.png)
+
 
 ## Features
 1. REST API to create, read, update, delete (CURD) To Dos.
