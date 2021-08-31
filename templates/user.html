@@ -3,14 +3,8 @@
 
 {% block content %}
 
-<style>
-#registerInForm{
-    display: none
-}
 
-</style>
-
-<form id="registerInForm">
+<form id="registerInForm" class='w-50 d-none mx-auto'>
   <div class="form-group">
     <label for="exampleInputPassword1">Username</label>
     <input type="text" class="form-control" placeholder="Username" name='username'>
@@ -30,7 +24,7 @@
   <button type="submit" class="btn btn-primary" onclick="RegisterUser(event)">Register</button>
 </form>
 
-<form id="logInForm">
+<form id="logInForm" class='w-50 mx-auto'>
     <div class="form-group">
         <label for="exampleInputPassword1">Username</label>
         <input type="text" class="form-control" placeholder="Username" name='username'>

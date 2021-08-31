@@ -9,7 +9,6 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router1 = routers.DefaultRouter()
 router.register('todo', views.ToDoViewSets, basename='todo')
-# router1.register('users', views.UserViewSets, basename='users')
 
 
 
@@ -29,13 +28,7 @@ urlpatterns = [
     # user logout api route
     path('logout/', views.logOutUser),
 
-    # user
-    # url('apis/', include(router1.urls)),
-    # url('user/',views.userView, name='user'),
-    # path('test/', views.registerUser, name='test'),
-    # path('test/<int:todo_id>', views.getSingleofTodo, name='test1'),
-    # path('testp/', views.putTodo, name='test2'),
-    # url('ind/', views.test, name='file')
+
 ]
 
 

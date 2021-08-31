@@ -7,9 +7,7 @@
 
 
 <style>
-    .md:before {
-        content: "\F15A"
-    }
+
 
     #root {
         width: 70%;
@@ -19,24 +17,10 @@
         flex-direction: column;
         margin: auto;
         border: 1px solid black;
-        padding: 5px;
+        /* padding: 5px; */
     }
 
-    #addNew {
-        width: 100%;
-        text-align: center;
-        margin: 5px 0 10px 0;
-    }
 
-    #newitem {
-        width: 50%;
-    }
-
-    #todoArea {
-        width: 90%;
-        margin: auto;
-        padding: 10px;
-    }
 
     .inforow {
         display: flex;
@@ -110,10 +94,10 @@
 
     <div id="root" class="bg-light card-columns">
         {% if user.is_authenticated %}
-        <h3 class="bg-success card text-capitalize"> Hi There, {{user}}</h3>
+        <h3 class="bg-success text-capitalize"> Hi There, {{user}}</h3>
         {% endif %}
 
-
+        <div class="p-2">
         <form class="card py-2">
             <div id="inp">
                 <label for="newitem">New Todo</label>
@@ -122,7 +106,7 @@
                 <textarea name="desc" id="desc" cols="30" rows="1" placeholder="Add Description"
                     class="form-control"></textarea>
                 <label for="date">Due Date</label>
-                <input type="datetime-local" name="date" id="date" placeholder="Due Date" class="w-50">
+                <input type="datetime-local" name="duedate" id="date" placeholder="Due Date" class="w-50">
                 <label for="priority">Priority</label>
                 <select name="priority" id="priority" class="w-25">
                     <option value="1">1</option>
@@ -136,9 +120,8 @@
                 <button type="submit" class="btn btn-primary" onclick="submitToDo(event)">Add New</button>
             </div>
         </form>
-
-
         <div id="todoArea" class="list-group"></div>
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -193,7 +176,7 @@
         function submitToDo(e) {
             e.preventDefault()
             var dat = new FormData($('form')[0])
-            console.log('----------------------',Object.fromEntries(new FormData($('form')[0])))
+            console.log('----------------------', Object.fromEntries(new FormData($('form')[0])))
 
 
             fetch(url, {
@@ -207,7 +190,7 @@
                 console.log(res)
                 if (res.status == 201) {
                     createToDoList()
-                    e.target.reset()
+                    $('form')[0].reset();
                 }
             })
         }
@@ -225,8 +208,9 @@
 
 
                 for (let item of data) {
-                    let date = item.completed ? `<label class="completedate">${dtParser(item.datecompleted)}</label>` :
-                        `<label class="duedate">${dtParser(item.duedate)}</label>`
+                    let due = item.duedate ? `<label class="duedate">Due in ${dtParser(item.duedate)}</label>` : ''
+                    let date = item.completed ? `<label class="completedate">${dtParser(item.datecompleted)}</label>` :due
+                        
                     console.log(item.completed)
                     txt += `<div class='list-group-item todoitem ${item.completed ? "checked" : ""}'>
                             <div class="inforow">
@@ -234,8 +218,10 @@
                                     <input type="checkbox" onclick='checkToDo(${item.id})' class="checkbox" ${item.completed ? "checked" : ""}>
                                 </div>
                                 <label class="todotext">
-                                    ${'!'.repeat(item.priority)}
-                                    ${item.title}
+                                    <div class='h6 d-inline'>
+                                        ${'!'.repeat(item.priority)}
+                                        ${item.title}
+                                    </div>
                                     ${item.file != null ? `<a href="${item.file}" target='_blank' class="attachment">
                                         <img src='static/lg.svg'>
                                         </a>` : ''}
@@ -261,48 +247,28 @@
 
         // checking a entry 
         function checkToDo(id) {
-            console.log(id)
-            fetch(url + `${id}/`)
-                .then(res => res.json())
-                .then(function (data) {
-                    data.completed = !data.completed
-                    fetch(data.file).then(res => res.blob()).then(
-                        function (fileData) {
-                            data.file = new File([fileData], '')
-                            data.datecompleted = new Date().toISOString()
-                            console.log(data)
-                            var form_data = new FormData();
+            fetch(url + `${id}/`).then(res=>res.json()).then(function (res) {
 
-                            for (var key in data) {
-                                form_data.append(key, data[key]);
-                            }
-
-                            fetch(url + `${id}/`, {
-                                method: "PATCH",
-                                headers: {
-                                    // 'Content-Type': 'application/json',
-                                    'X-CSRFToken': '{{ csrf_token }}' //getCookie('csrftoken')
-                                },
-                                body: form_data //JSON.stringify(data)
-                            }).then(
-                                console.log
-                            )
-                        }
-                    )
+                comStat =! res.completed 
+                fetch(url + `${id}/`, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'//getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        'completed': comStat,
+                        'datecompleted': comStat ? new Date().toISOString() : null
+                    })
+                }).then(function (ret) {
+                    if (ret.status == 200) {
+                        createToDoList()
+                    }
                 })
+            })
+
         }
 
-
-        // fetch(url+'17/',{
-        //     method: "PATCH",
-        //     headers: {
-        //             // 'Content-Type': 'application/json',
-        //             'X-CSRFToken': "BRAbfkqjWR4JX74qXBkFOpkv1KZeQTEVmtz39Od3nzlMvB0r3vbtq0RggicLPwsN" //getCookie('csrftoken')
-        //         },
-        //         body:{
-        //             'completed' : true
-        //         }
-        // })
 
 
 

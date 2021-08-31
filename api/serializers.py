@@ -13,15 +13,9 @@ class ToDoSerializer(serializers.ModelSerializer):
         model = ToDos
         # fields = '__all__'
         exclude = ['user']
-    
-    # def update(self, instance, validated_data):
-    #     print(validated_data,'------------------------')
-    #     return super().update(instance, validated_data)
 
     def save(self, **kwargs):
-        # print('inside serializer', kwargs, self.context['request'].user)
         kwargs['user'] = self.context['request'].user
-        # print('777777777777777777777777777777777')
         return super().save(**kwargs)
 
 
@@ -69,4 +63,3 @@ class LoginSerializer(serializers.Serializer):
         
             return user
         raise ValidationError("incorrect password")
-        # return super().validate(attrs)
