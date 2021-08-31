@@ -3,7 +3,7 @@
 ---
 
 
-This project is not meant for yet another fancy To Do application, but to provide a boilerplate to quickly get started with Django 3 as backend and setup django-rest-framework as a RESTful API.  
+_This project is not meant for yet another fancy To Do application, but to provide a boilerplate to quickly get started with Django 3 as backend and setup django-rest-framework as a RESTful API._
 
 Log In Page             |  Home Page
 :-------------------------:|:-------------------------:
@@ -14,10 +14,15 @@ Log In Page             |  Home Page
 1. REST API to create, read, update, delete (CURD) To Dos.
 2. User authentication. Simultaneousely can have multiple users, each having their own To Dos hidden from each other.
 
-## Things to learn:
+## Things to learn
 1. Django 3 for web backend and serve on local network.
 1. Django templating language.
 2. Setting up a REST API with CURD operations.
 3. Seperating frontend and backend and how to communicate with each other through a REST API.
 4. Settting up an API for User registration, log-in and log-out.
 
+## Getting Started
+1. Install Django 3 and django-rest-framework
+3. make superuser
+2. make makemigrations, migrate
+4. runserver
