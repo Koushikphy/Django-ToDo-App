@@ -23,6 +23,7 @@ Log In Page             |  Home Page
 
 ## Getting Started
 1. Install Django 3 and django-rest-framework
-3. make superuser
-2. make makemigrations, migrate
-4. runserver
+2. Make makemigrations and migrate
+3. Make superuser
+4. Run server
+5. Use the app
