@@ -18,7 +18,7 @@ from django.contrib import messages
 from datetime import datetime
 from django.utils.timezone import now
 from django.utils import timezone
-
+from rest_framework import filters
 
 
 class ToDoViewSets(viewsets.ModelViewSet):
@@ -27,7 +27,8 @@ class ToDoViewSets(viewsets.ModelViewSet):
     serializer_class = ToDoSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
     authentication_classes = [SessionAuthentication, BasicAuthentication]
-
+    search_fields= ['title','desc']
+    filter_backends = (filters.SearchFilter,)
 
     def get_queryset(self):
         return ToDos.objects.filter(user=self.request.user)

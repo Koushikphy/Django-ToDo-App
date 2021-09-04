@@ -120,6 +120,10 @@
                 <button type="submit" class="btn btn-primary" onclick="submitToDo(event)">Add New</button>
             </div>
         </form>
+        <div class="text-center card py-2">
+            <label for="searchinput" class="mr-4">Search ToDo</label>
+            <input type="text" name="seach" id="searchinput" oninput="searchThis(event)">
+        </div>
         <div id="todoArea" class="list-group"></div>
     </div>
     </div>
@@ -132,6 +136,12 @@
 
         const url = "/api/todo/"
         var todoList;
+
+
+        function searchThis(event){
+            event.preventDefault()
+            createToDoList(event.target.value)
+        }
 
 
         // cokie validation
@@ -176,7 +186,7 @@
         function submitToDo(e) {
             e.preventDefault()
             var dat = new FormData($('form')[0])
-            console.log('----------------------', Object.fromEntries(new FormData($('form')[0])))
+            // console.log('----------------------', Object.fromEntries(new FormData($('form')[0])))
 
 
             fetch(url, {
@@ -187,7 +197,7 @@
                 body: dat
             }
             ).then(function (res) {
-                console.log(res)
+                // console.log(res)
                 if (res.status == 201) {
                     createToDoList()
                     $('form')[0].reset();
@@ -200,18 +210,19 @@
 
 
         // GET request, list all todos
-        function createToDoList() {
-            fetch(url).then(res => res.json()).then(function (data) {
+        function createToDoList(searchparams) {
+            let slug = searchparams!=undefined ? `?search=${searchparams}` : ''
+            fetch(url+slug).then(res => res.json()).then(function (data) {
                 var txt = ''
                 todoList = []
-                console.log(data)
+                // console.log(data)
 
 
                 for (let item of data) {
                     let due = item.duedate ? `<label class="duedate">Due in ${dtParser(item.duedate)}</label>` : ''
                     let date = item.completed ? `<label class="completedate">${dtParser(item.datecompleted)}</label>` :due
                         
-                    console.log(item.completed)
+                    // console.log(item.completed)
                     txt += `<div class='list-group-item todoitem ${item.completed ? "checked" : ""}'>
                             <div class="inforow">
                                 <div class="check-container">
@@ -279,7 +290,7 @@
                 method: 'DELETE',
                 headers: headers,
             }).then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if (response.status == 204) {
                     createToDoList()
                 }
